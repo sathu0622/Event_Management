@@ -1,46 +1,25 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { registerUser, loginUser, registerOrganizer, getUser, getUserId, changePassword } = require("../controllers/authController");
 
 const router = express.Router();
 
-// Register //
-router.post("/register", async (req, res) => {
-  try {
-    const { name, email, password,phone, role } = req.body;
+// Register Route
+router.post("/register", registerUser);
 
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: "User already exists" });
+// Login Route
+router.post("/login", loginUser);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+//organizer 
+router.post("/org_register", registerOrganizer);
 
-    user = new User({ name, email, password: hashedPassword, phone, role });
-    await user.save();
+//getuserbyid
+router.get("/get/:id",getUserId);
 
-    res.status(201).json({ msg: "User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//get all user
+router.get("/get",getUser);
 
-// Login
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "Invalid credentials" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
-
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//change password
+router.put("/change-password/:id", changePassword);
 
 module.exports = router;
+

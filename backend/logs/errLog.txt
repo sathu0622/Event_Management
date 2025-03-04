@@ -1,0 +1,1 @@
+20250303	20:44:13	41793454-4f9a-4c89-85b5-f187f5f2ebae	Error: ENOENT: no such file or directory, stat 'D:\Event_Management\backend\uploads\${user.document}'

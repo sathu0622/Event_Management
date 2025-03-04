@@ -13,4 +13,8 @@ router.get("/admin", authMiddleware, roleMiddleware("admin"), (req, res) => {
   res.json({ msg: "Welcome Admin", user: req.user });
 });
 
+router.get("/organizer", authMiddleware, roleMiddleware("organizer"), (req, res) => {
+  res.json({ msg: "Welcome Organizer", user: req.user });
+});
+
 module.exports = router;
